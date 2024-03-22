@@ -91,7 +91,7 @@ def chat():
         messages = users[username]['chathistory']
     return render_template('chat.html', messages=messages)
 
-@app.route('/print-json-db', methods=['GET'])
+@app.route('/admin', methods=['GET'])
 def print_json_db():
     try:
         with open('users.json', 'r') as f:
