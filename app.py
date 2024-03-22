@@ -61,7 +61,7 @@ def profile(username):
 
 # New route for AI chat
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
-headers = {"Authorization": "Bearer kirebada"}
+headers = {"Authorization": "Bearer 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"}
 
 def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
@@ -91,14 +91,28 @@ def chat():
         messages = users[username]['chathistory']
     return render_template('chat.html', messages=messages)
 
-@app.route('/admin', methods=['GET'])
+@app.route('/admin', methods=['GET', 'POST'])
 def print_json_db():
-    try:
-        with open('users.json', 'r') as f:
-            users = json.load(f)
-        return jsonify(users)
-    except FileNotFoundError:
-        return "JSON database file not found", 404
+    if request.method == 'POST':
+        # Define the expected admin ID and password
+        admin_id = 'admin'
+        admin_password = 'password'
+
+        # Get the ID and password from the form data
+        provided_id = request.form.get('id')
+        provided_password = request.form.get('password')
+
+        # Check if the provided ID and password match the expected values
+        if provided_id == admin_id and provided_password == admin_password:
+            try:
+                with open('users.json', 'r') as f:
+                    users = json.load(f)
+                return jsonify(users)
+            except FileNotFoundError:
+                return "JSON database file not found", 404
+        else:
+            return "Invalid ID or password", 401
+    return render_template('admin.html')
 
 
 if __name__ == '__main__':
