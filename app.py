@@ -1,7 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 import json
+import requests
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 # Load or create the JSON database
 try:
@@ -45,6 +52,40 @@ def profile(username):
         return render_template('profile.html', username=username, chathistory=users[username]['chathistory'])
     else:
         return "User not found", 404
+
+# New route for AI chat
+API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
+headers = {"Authorization": "Bearer kirebada"}
+
+def query(payload):
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.json()
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    if request.method == 'POST':
+        message = request.form['message']
+        # Process the message using the Hugging Face API
+        output = query({"inputs": message})
+        # Adjust this line based on the actual structure of the API response
+        # For example, if the response is a list and the AI's response is the first element:
+        ai_response = output[0] if output else 'AI response not available'
+        
+        # Assuming each user has a chat history
+        username = 'default_user' # You might want to replace this with actual user handling
+        if username not in users:
+            users[username] = {'chathistory': []}
+        users[username]['chathistory'].append({'type': 'user', 'text': message})
+        users[username]['chathistory'].append({'type': 'ai', 'text': ai_response})
+        with open('users.json', 'w') as f:
+            json.dump(users, f)
+        return redirect(url_for('chat'))
+    messages = [] # Initialize an empty list for messages
+    username = 'default_user' # You might want to replace this with actual user handling
+    if username in users:
+        messages = users[username]['chathistory']
+    # print(output)
+    return render_template('chat.html', messages=messages)
 
 if __name__ == '__main__':
     app.run(debug=True)
