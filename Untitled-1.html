@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Interaction</title>
+  <style>
+    /* Basic styling for the chat interface */
+    #chat-container {
+      width: 400px;
+      margin: auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    #chat-messages {
+      margin-bottom: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .message {
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+    .user-message {
+      background-color: #f0f0f0;
+      text-align: right;
+    }
+    .bot-message {
+      background-color: #d3d3d3;
+      text-align: left;
+    }
+    #user-input {
+      width: calc(100% - 20px);
+      padding: 5px;
+    }
+    #send-button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-messages"></div>
+    <input type="text" id="user-input" placeholder="Type your message here...">
+    <button id="send-button">Send</button>
+  </div>
+
+  <script>
+    async function query(data) {
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
+        {
+          headers: { Authorization: "Bearer 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" },
+          method: "POST",
+          body: JSON.stringify(data),
+        }
+      );
+      try {
+        const result = await response.text();
+        return result;
+      } catch (error) {
+        console.error('Error:', error);
+        return 'Error occurred while processing your request';
+      }
+    }
+
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', async () => {
+      const userMessage = userInput.value.trim();
+      if (userMessage === '') return;
+
+      // Display user message
+      displayMessage(userMessage, true);
+
+      // Get response from ChatGPT
+      const response = await query({ "inputs": userMessage });
+
+      // Display ChatGPT response
+      displayMessage(response, false);
+
+      // Clear user input
+      userInput.value = '';
+    });
+
+    function displayMessage(message, isUser) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      if (isUser) {
+        messageDiv.classList.add('user-message');
+      } else {
+        messageDiv.classList.add('bot-message');
+      }
+      messageDiv.textContent = message;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  </script>
+</body>
+</html>
