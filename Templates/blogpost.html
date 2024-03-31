@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url(https://cdn.wallpapersafari.com/41/41/vIdSZT.jpg);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #ece5e5;
+        }
+
+        .upload-section, .comment-section, .rating-section, .history-section {
+            margin-bottom: 20px;
+        }
+
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+           
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .rating-section {
+            text-align: center; /* Center the heading */
+        }
+        
+        .stars {
+            direction: rtl; /* Right-to-left direction */
+            display: flex; /* Use Flexbox */
+            justify-content: center; /* Center items horizontally */
+            align-items: center; /* Center items vertically */
+            flex-direction: row; /* Arrange items in a row */
+        }
+        
+        .stars input {
+            display: none; /* Hide the radio inputs */
+        }
+        
+        .stars label {
+            font-size: 30px;
+            color: #ccc; /* Initial color of the stars */
+            transition: color 0.2s; /* Smooth transition for color change */
+        }
+        
+        /* Change color of stars when hovered or selected */
+        .stars input:checked ~ label,
+        .stars:not(:checked) > label:hover,
+        .stars:not(:checked) > label:hover ~ label {
+            color: #ffc107; /* Color of the stars when hovered or selected */
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Texts and Images</h1>
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div class="upload-section">
+                <h2>Upload Texts</h2>
+                <textarea name="text" id="text" rows="4" cols="50" placeholder="Enter your text here..."></textarea>
+                <button type="submit">Submit</button>
+            </div>
+            <div class="upload-section">
+                <h2>Upload Images</h2>
+                <input type="file" name="image" id="image" accept="image/*">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="comment-section">
+            <h2>Comment</h2>
+            <textarea name="comment" id="comment" rows="4" cols="50" placeholder="Enter your comment here..."></textarea>
+            <button type="button">Post Comment</button>
+        </div>
+        <div class="rating-section">
+            <h2>Rating</h2>
+            <div class="stars">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5" title="5 stars">★</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4" title="4 stars">★</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3" title="3 stars">★</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2" title="2 stars">★</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1" title="1 star">★</label>
+            </div>
+        </div>
+        <div class="history-section">
+            <h2>History Check</h2>
+            <button type="button">Check History</button>
+        </div>
+        
+            <button type="submit">Submit</button>
+        
+    </div>
+</body>
+</html>
